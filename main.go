@@ -20,8 +20,10 @@ var (
 	consumerSecret    = getenv("TWITTER_CONSUMER_SECRET")
 	accessToken       = getenv("TWITTER_ACCESS_TOKEN")
 	accessTokenSecret = getenv("TWITTER_ACCESS_TOKEN_SECRET")
-	maxTweetAge       = getenv("MAX_TWEET_AGE")
-	whitelist         = getWhitelist()
+	maxTweetAge       = "336h"
+	whitelist         = []string{
+		"1146828042255458304",
+	}
 )
 
 // MyResponse for AWS SAM
@@ -36,16 +38,6 @@ func getenv(name string) string {
 		panic("missing required environment variable " + name)
 	}
 	return v
-}
-
-func getWhitelist() []string {
-	v := os.Getenv("WHITELIST")
-
-	if v == "" {
-		return make([]string, 0)
-	}
-
-	return strings.Split(v, ":")
 }
 
 func getTimeline(api *anaconda.TwitterApi) ([]anaconda.Tweet, error) {
@@ -91,7 +83,6 @@ func deleteFromTimeline(api *anaconda.TwitterApi, ageLimit time.Duration) {
 		}
 	}
 	log.Print("no more tweets to delete")
-
 }
 
 func ephemeral() (MyResponse, error) {
